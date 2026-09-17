@@ -152,7 +152,7 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
       </header>
 
       {/* Progress Bar */}
-      <div className="w-full bg-zinc-850 h-1.5 overflow-hidden">
+      <div className="w-full bg-zinc-800 h-1.5 overflow-hidden">
         <div 
           className="bg-gradient-to-r from-brand-500 to-amber-400 h-full transition-all duration-300 ease-out"
           style={{ width: `${progressPercent}%` }}

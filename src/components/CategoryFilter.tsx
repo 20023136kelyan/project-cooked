@@ -45,7 +45,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
                   isSelected
                     ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-md shadow-zinc-900/10 dark:shadow-white/10'
-                    : 'bg-white dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/80 hover:bg-zinc-50 dark:hover:bg-zinc-750'
+                    : 'bg-white dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-700/80 hover:bg-zinc-50 dark:hover:bg-zinc-700'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isSelected ? 'text-amber-400 dark:text-brand-600' : 'text-zinc-400'}`} />
