@@ -132,7 +132,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-white text-zinc-900 selection:bg-brand-500 selection:text-white">
       {/* Header */}
       <Header
         darkMode={darkMode}
@@ -206,9 +206,9 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-200 dark:border-zinc-800/80 bg-white/60 dark:bg-zinc-900/60 py-8 text-center text-xs text-zinc-500 dark:text-zinc-400">
+      <footer className="border-t border-zinc-200 bg-white py-8 text-center text-xs text-zinc-500">
         <div className="max-w-7xl mx-auto px-4 space-y-2">
-          <p className="font-semibold text-zinc-700 dark:text-zinc-300">
+          <p className="font-semibold text-zinc-700">
             Project Cooked &mdash; Crafted for culinary exploration and precision cooking.
           </p>
           <p>
