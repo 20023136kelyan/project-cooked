@@ -238,7 +238,7 @@ export const RecipeDetailModal: React.FC<RecipeDetailModalProps> = ({
                     className={`flex items-start gap-3 p-3 rounded-2xl border transition-all cursor-pointer select-none ${
                       isChecked
                         ? 'bg-zinc-50 dark:bg-zinc-800/30 border-zinc-200 dark:border-zinc-800 opacity-60'
-                        : 'bg-white dark:bg-zinc-850 border-zinc-200/80 dark:border-zinc-750 hover:border-brand-300 dark:hover:border-brand-700'
+                        : 'bg-white dark:bg-zinc-800/80 border-zinc-200/80 dark:border-zinc-700/80 hover:border-brand-300 dark:hover:border-brand-700'
                     }`}
                   >
                     <div
@@ -314,7 +314,7 @@ export const RecipeDetailModal: React.FC<RecipeDetailModalProps> = ({
               {recipe.steps.map((step) => (
                 <div
                   key={step.stepNumber}
-                  className="p-4 rounded-2xl bg-white dark:bg-zinc-850 border border-zinc-200/80 dark:border-zinc-750 flex gap-4 items-start"
+                  className="p-4 rounded-2xl bg-white dark:bg-zinc-800/80 border border-zinc-200/80 dark:border-zinc-700/80 flex gap-4 items-start"
                 >
                   <div className="w-7 h-7 rounded-xl bg-brand-100 dark:bg-brand-950/80 text-brand-700 dark:text-brand-400 font-bold text-xs flex items-center justify-center shrink-0">
                     {step.stepNumber}
