@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAddModal,
 }) => {
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-zinc-900/80 border-b border-orange-100 dark:border-zinc-800 transition-colors duration-200">
+    <header className="sticky top-0 z-40 backdrop-blur-md bg-white/95 border-b border-zinc-200/80 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => {
