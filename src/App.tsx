@@ -16,10 +16,9 @@ import { CookModeModal } from './components/CookModeModal';
 import { AddRecipeModal } from './components/AddRecipeModal';
 
 export const App: React.FC = () => {
-  // Theme state
+  // Theme state: defaults to clean bright white
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem('cooked_theme') === 'dark' || 
-      (!('cooked_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    return localStorage.getItem('cooked_theme') === 'dark';
   });
 
   useEffect(() => {
