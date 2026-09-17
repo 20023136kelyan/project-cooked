@@ -107,18 +107,18 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
   const progressPercent = Math.round(((currentStepIndex + 1) / recipe.steps.length) * 100);
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950 text-zinc-100 flex flex-col select-none overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col select-none overflow-hidden">
       {/* Top Bar */}
-      <header className="px-4 sm:px-8 py-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/60 backdrop-blur-md">
+      <header className="px-4 sm:px-8 py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-white/90 dark:bg-zinc-900/60 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold">
             <UtensilsCrossed className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-bold text-white font-display line-clamp-1">
+            <h2 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white font-display line-clamp-1">
               {recipe.title}
             </h2>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
               Cook Mode &bull; Step {currentStepIndex + 1} of {recipe.steps.length}
             </p>
           </div>
@@ -132,7 +132,7 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
               showIngredients
                 ? 'bg-brand-600 text-white'
-                : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
+                : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300'
             }`}
           >
             <List className="w-3.5 h-3.5" />
@@ -143,7 +143,7 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-400 dark:hover:text-white transition-colors"
             title="Exit Cook Mode (Esc)"
           >
             <X className="w-5 h-5" />
@@ -152,7 +152,7 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
       </header>
 
       {/* Progress Bar */}
-      <div className="w-full bg-zinc-800 h-1.5 overflow-hidden">
+      <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-1.5 overflow-hidden">
         <div 
           className="bg-gradient-to-r from-brand-500 to-amber-400 h-full transition-all duration-300 ease-out"
           style={{ width: `${progressPercent}%` }}
@@ -166,21 +166,21 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
           {!isCompleted ? (
             <div className="space-y-8 my-auto">
               {/* Step indicator badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-950/80 border border-brand-800/60 text-brand-400 text-xs font-bold uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-brand-700 dark:bg-brand-950/80 dark:border-brand-800/60 dark:text-brand-400 text-xs font-bold uppercase tracking-wider">
                 <span>Step {currentStep.stepNumber} of {recipe.steps.length}</span>
               </div>
 
               {/* Big instruction text */}
               <div className="space-y-4">
-                <h3 className="text-2xl sm:text-4xl md:text-5xl font-extrabold font-display text-white leading-tight">
+                <h3 className="text-2xl sm:text-4xl md:text-5xl font-extrabold font-display text-zinc-900 dark:text-white leading-tight">
                   {currentStep.instruction}
                 </h3>
 
                 {currentStep.tip && (
-                  <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-800/40 flex items-start gap-3 text-amber-200 text-sm max-w-2xl">
-                    <Lightbulb className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                  <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 dark:bg-amber-950/30 dark:border-amber-800/40 dark:text-amber-200 flex items-start gap-3 text-sm max-w-2xl">
+                    <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-bold text-amber-300">Chef's Secret: </span>
+                      <span className="font-bold text-amber-800 dark:text-amber-300">Chef's Secret: </span>
                       {currentStep.tip}
                     </div>
                   </div>
@@ -189,14 +189,14 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
 
               {/* Interactive Timer (If Step Has Timer) */}
               {currentStep.timerSeconds && (
-                <div className="p-6 rounded-3xl bg-zinc-900 border border-zinc-800/90 max-w-md shadow-2xl space-y-4">
-                  <div className="flex items-center justify-between text-xs text-zinc-400 font-semibold uppercase tracking-wider">
+                <div className="p-6 rounded-3xl bg-zinc-50 border border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800/90 max-w-md shadow-xl space-y-4">
+                  <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-semibold uppercase tracking-wider">
                     <div className="flex items-center gap-1.5">
-                      <Volume2 className="w-3.5 h-3.5 text-brand-400" />
+                      <Volume2 className="w-3.5 h-3.5 text-brand-500" />
                       <span>Cooking Timer</span>
                     </div>
                     {timerFinished && (
-                      <span className="text-emerald-400 font-bold animate-pulse">
+                      <span className="text-emerald-500 font-bold animate-pulse">
                         Time's up!
                       </span>
                     )}
@@ -206,10 +206,10 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
                   <div className="flex items-baseline justify-center gap-2 py-2">
                     <span className={`text-6xl sm:text-7xl font-mono font-bold tracking-tight ${
                       timerFinished 
-                        ? 'text-emerald-400 animate-bounce' 
+                        ? 'text-emerald-500 animate-bounce' 
                         : timerRunning 
-                          ? 'text-brand-400' 
-                          : 'text-zinc-200'
+                          ? 'text-brand-500' 
+                          : 'text-zinc-800 dark:text-zinc-200'
                     }`}>
                       {formatTime(timeLeft)}
                     </span>
@@ -221,7 +221,7 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setTimeLeft((t) => Math.max(0, t - 60))}
-                      className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+                      className="p-2 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-transparent dark:text-zinc-300"
                       title="-1 Minute"
                     >
                       <Minus className="w-4 h-4" />
@@ -262,7 +262,7 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setTimeLeft((t) => t + 60)}
-                      className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+                      className="p-2 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-transparent dark:text-zinc-300"
                       title="+1 Minute"
                     >
                       <Plus className="w-4 h-4" />
@@ -276,7 +276,7 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
                         setTimeLeft(currentStep.timerSeconds || 0);
                         setTimerFinished(false);
                       }}
-                      className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200"
+                      className="p-2 rounded-xl bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-500 hover:text-zinc-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-transparent dark:text-zinc-400 dark:hover:text-zinc-200"
                       title="Reset Timer"
                     >
                       <RotateCcw className="w-4 h-4" />
@@ -293,14 +293,14 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
               </div>
 
               <div className="space-y-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-brand-400">
+                <span className="text-xs font-bold uppercase tracking-widest text-brand-500">
                   Dish Completed!
                 </span>
-                <h3 className="text-3xl sm:text-4xl font-extrabold font-display text-white">
+                <h3 className="text-3xl sm:text-4xl font-extrabold font-display text-zinc-900 dark:text-white">
                   Bon Appétit!
                 </h3>
-                <p className="text-sm text-zinc-400">
-                  You successfully cooked <span className="text-brand-300 font-semibold">{recipe.title}</span>. Plate your masterpiece and enjoy!
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  You successfully cooked <span className="text-brand-600 dark:text-brand-300 font-semibold">{recipe.title}</span>. Plate your masterpiece and enjoy!
                 </p>
               </div>
 
@@ -311,7 +311,7 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
                     setCurrentStepIndex(0);
                     setIsCompleted(false);
                   }}
-                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-sm font-semibold transition-colors"
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-200 text-sm font-semibold transition-colors"
                 >
                   Review Steps
                 </button>
@@ -328,12 +328,12 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
 
           {/* Bottom Step Navigation Bar */}
           {!isCompleted && (
-            <div className="pt-8 border-t border-zinc-800 flex items-center justify-between gap-4 mt-8">
+            <div className="pt-8 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-4 mt-8">
               <button
                 type="button"
                 onClick={() => setCurrentStepIndex((prev) => Math.max(0, prev - 1))}
                 disabled={currentStepIndex === 0}
-                className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-200 text-sm font-semibold disabled:opacity-30 disabled:pointer-events-none transition-all"
+                className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-700 dark:bg-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:text-zinc-200 text-sm font-semibold disabled:opacity-30 disabled:pointer-events-none transition-all"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Previous</span>
@@ -341,8 +341,8 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
 
               <div className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-500">
                 <span>Navigate with</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono text-[10px]">&larr;</kbd>
-                <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono text-[10px]">&rarr;</kbd>
+                <kbd className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-mono text-[10px]">&larr;</kbd>
+                <kbd className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-mono text-[10px]">&rarr;</kbd>
                 <span>Space for timer</span>
               </div>
 
@@ -371,15 +371,15 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
 
         {/* Quick Ingredients Sidebar Overlay / Drawer */}
         {showIngredients && (
-          <aside className="w-80 border-l border-zinc-800 bg-zinc-900/95 backdrop-blur-md p-6 flex flex-col overflow-y-auto animate-fadeIn absolute right-0 inset-y-0 z-10 shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
-              <h4 className="font-bold font-display text-white text-base">
+          <aside className="w-80 border-l border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-6 flex flex-col overflow-y-auto animate-fadeIn absolute right-0 inset-y-0 z-10 shadow-2xl">
+            <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
+              <h4 className="font-bold font-display text-zinc-900 dark:text-white text-base">
                 Ingredients List
               </h4>
               <button
                 type="button"
                 onClick={() => setShowIngredients(false)}
-                className="p-1 text-zinc-400 hover:text-white"
+                className="p-1 text-zinc-400 hover:text-zinc-800 dark:hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -387,11 +387,11 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
 
             <div className="py-4 space-y-3 flex-1 overflow-y-auto">
               {recipe.ingredients.map((ing) => (
-                <div key={ing.id} className="p-3 rounded-xl bg-zinc-800/60 border border-zinc-700/50 text-xs">
-                  <span className="font-bold text-brand-400">
+                <div key={ing.id} className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/80 dark:bg-zinc-800/60 dark:border-zinc-700/50 text-xs">
+                  <span className="font-bold text-brand-600 dark:text-brand-400">
                     {formatIngredientAmount(ing.amount)} {ing.unit}
                   </span>{' '}
-                  <span className="text-zinc-200">{ing.name}</span>
+                  <span className="text-zinc-800 dark:text-zinc-200">{ing.name}</span>
                 </div>
               ))}
             </div>
