@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Recipe } from '../types/recipe';
 import { playTimerAlarm } from '../utils/sound';
-import { formatIngredientAmount } from '../utils/format';
+import { convertIngredientUnit, UnitSystem } from '../utils/units';
 import { 
   X, 
   ChevronLeft, 
@@ -16,6 +16,7 @@ import {
   UtensilsCrossed, 
   Sparkles,
   Volume2,
+  VolumeX,
   List
 } from 'lucide-react';
 
@@ -35,6 +36,10 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showIngredients, setShowIngredients] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [unitSystem, setUnitSystem] = useState<UnitSystem>(() => {
+    return (localStorage.getItem('cooked_unit_system') as UnitSystem) || 'us';
+  });
 
   // Timer state for current step
   const currentStep = recipe.steps[currentStepIndex];
@@ -97,6 +102,29 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
+
+  const handleToggleSpeech = () => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    } else {
+      window.speechSynthesis.cancel();
+      const textToSpeak = `Step ${currentStep.stepNumber}. ${currentStep.instruction}. ${currentStep.tip ? `Chef tip: ${currentStep.tip}` : ''}`;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      setIsSpeaking(true);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  }, [currentStepIndex, isOpen]);
 
   const formatTime = (totalSeconds: number) => {
     const m = Math.floor(totalSeconds / 60);
@@ -165,9 +193,25 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
         <div className="flex-1 overflow-y-auto px-4 sm:px-12 py-8 sm:py-12 flex flex-col justify-between max-w-4xl mx-auto w-full">
           {!isCompleted ? (
             <div className="space-y-8 my-auto">
-              {/* Step indicator badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-brand-700 dark:bg-brand-950/80 dark:border-brand-800/60 dark:text-brand-400 text-xs font-bold uppercase tracking-wider">
-                <span>Step {currentStep.stepNumber} of {recipe.steps.length}</span>
+              {/* Step indicator badge & Voice Narration */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-brand-700 dark:bg-brand-950/80 dark:border-brand-800/60 dark:text-brand-400 text-xs font-bold uppercase tracking-wider">
+                  <span>Step {currentStep.stepNumber} of {recipe.steps.length}</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleToggleSpeech}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                    isSpeaking
+                      ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-700 animate-pulse'
+                      : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-700'
+                  }`}
+                  title="Read step instructions aloud"
+                >
+                  {isSpeaking ? <VolumeX className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" /> : <Volume2 className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />}
+                  <span>{isSpeaking ? 'Stop Reading' : 'Speak Step'}</span>
+                </button>
               </div>
 
               {/* Big instruction text */}
@@ -385,15 +429,47 @@ export const CookModeModal: React.FC<CookModeModalProps> = ({
               </button>
             </div>
 
-            <div className="py-4 space-y-3 flex-1 overflow-y-auto">
-              {recipe.ingredients.map((ing) => (
-                <div key={ing.id} className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/80 dark:bg-zinc-800/60 dark:border-zinc-700/50 text-xs">
-                  <span className="font-bold text-brand-600 dark:text-brand-400">
-                    {formatIngredientAmount(ing.amount)} {ing.unit}
-                  </span>{' '}
-                  <span className="text-zinc-800 dark:text-zinc-200">{ing.name}</span>
-                </div>
-              ))}
+            {/* Quick unit switch */}
+            <div className="py-2.5 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800">
+              <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">Units:</span>
+              <div className="flex items-center bg-zinc-100 dark:bg-zinc-800 p-0.5 rounded-lg text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setUnitSystem('us')}
+                  className={`px-2 py-0.5 rounded transition-colors ${
+                    unitSystem === 'us'
+                      ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
+                      : 'text-zinc-500'
+                  }`}
+                >
+                  US
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUnitSystem('metric')}
+                  className={`px-2 py-0.5 rounded transition-colors ${
+                    unitSystem === 'metric'
+                      ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-xs'
+                      : 'text-zinc-500'
+                  }`}
+                >
+                  Metric
+                </button>
+              </div>
+            </div>
+
+            <div className="py-4 space-y-2.5 flex-1 overflow-y-auto">
+              {recipe.ingredients.map((ing) => {
+                const converted = convertIngredientUnit(ing.amount, ing.unit, unitSystem);
+                return (
+                  <div key={ing.id} className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/80 dark:bg-zinc-800/60 dark:border-zinc-700/50 text-xs">
+                    <span className="font-bold text-brand-600 dark:text-brand-400">
+                      {converted.formatted}
+                    </span>{' '}
+                    <span className="text-zinc-800 dark:text-zinc-200">{ing.name}</span>
+                  </div>
+                );
+              })}
             </div>
           </aside>
         )}

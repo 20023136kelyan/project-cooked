@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Heart, Plus, Moon, Sun } from 'lucide-react';
+import { Flame, Heart, Plus, Moon, Sun, ShoppingCart } from 'lucide-react';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -7,6 +7,8 @@ interface HeaderProps {
   favoritesCount: number;
   showFavoritesOnly: boolean;
   onToggleFavoritesOnly: () => void;
+  shoppingListCount: number;
+  onOpenShoppingList: () => void;
   onOpenAddModal: () => void;
 }
 
@@ -16,6 +18,8 @@ export const Header: React.FC<HeaderProps> = ({
   favoritesCount,
   showFavoritesOnly,
   onToggleFavoritesOnly,
+  shoppingListCount,
+  onOpenShoppingList,
   onOpenAddModal,
 }) => {
   return (
