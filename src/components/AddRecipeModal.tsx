@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Recipe, Category, Difficulty, Ingredient, CookingStep } from '../types/recipe';
-import { X, Plus, Trash2, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { X, Plus, Trash2, Sparkles, Image as ImageIcon, Edit3 } from 'lucide-react';
 
 interface AddRecipeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddRecipe: (recipe: Recipe) => void;
+  onSaveRecipe: (recipe: Recipe) => void;
+  editingRecipe?: Recipe | null;
 }
 
 const PRESET_IMAGES = [
@@ -19,7 +20,8 @@ const PRESET_IMAGES = [
 export const AddRecipeModal: React.FC<AddRecipeModalProps> = ({
   isOpen,
   onClose,
-  onAddRecipe,
+  onSaveRecipe,
+  editingRecipe,
 }) => {
   if (!isOpen) return null;
 
@@ -42,6 +44,51 @@ export const AddRecipeModal: React.FC<AddRecipeModalProps> = ({
     { instruction: 'Heat oil in pan over medium heat and sauté garlic.' },
     { instruction: 'Cook main ingredients until golden and season to taste.', timerMinutes: 5 },
   ]);
+
+  useEffect(() => {
+    if (editingRecipe) {
+      setTitle(editingRecipe.title);
+      setSubtitle(editingRecipe.subtitle);
+      setCategory(editingRecipe.category);
+      setDifficulty(editingRecipe.difficulty);
+      setPrepTime(editingRecipe.prepTimeMinutes);
+      setCookTime(editingRecipe.cookTimeMinutes);
+      setServings(editingRecipe.defaultServings);
+      setImageUrl(editingRecipe.imageUrl);
+      setCalories(editingRecipe.nutrition.calories);
+      setIngredients(
+        editingRecipe.ingredients.map((ing) => ({
+          name: ing.name,
+          amount: ing.amount,
+          unit: ing.unit,
+        }))
+      );
+      setSteps(
+        editingRecipe.steps.map((st) => ({
+          instruction: st.instruction,
+          timerMinutes: st.timerSeconds ? Math.round(st.timerSeconds / 60) : undefined,
+        }))
+      );
+    } else {
+      setTitle('');
+      setSubtitle('');
+      setCategory('Dinner');
+      setDifficulty('Easy');
+      setPrepTime(10);
+      setCookTime(20);
+      setServings(2);
+      setImageUrl(PRESET_IMAGES[0].url);
+      setCalories(450);
+      setIngredients([
+        { name: 'Olive oil', amount: 1, unit: 'tbsp' },
+        { name: 'Garlic cloves', amount: 2, unit: 'cloves' },
+      ]);
+      setSteps([
+        { instruction: 'Heat oil in pan over medium heat and sauté garlic.' },
+        { instruction: 'Cook main ingredients until golden and season to taste.', timerMinutes: 5 },
+      ]);
+    }
+  }, [editingRecipe, isOpen]);
 
   const handleAddIngredient = () => {
     setIngredients([...ingredients, { name: '', amount: 1, unit: 'cup' }]);
@@ -80,8 +127,8 @@ export const AddRecipeModal: React.FC<AddRecipeModalProps> = ({
         timerSeconds: step.timerMinutes ? step.timerMinutes * 60 : undefined,
       }));
 
-    const newRecipe: Recipe = {
-      id: `recipe-custom-${Date.now()}`,
+    const savedRecipe: Recipe = {
+      id: editingRecipe ? editingRecipe.id : `recipe-custom-${Date.now()}`,
       title: title.trim(),
       subtitle: subtitle.trim() || 'Delicious custom test recipe',
       description: subtitle.trim() || 'A homemade custom creation on Project Cooked.',
@@ -91,9 +138,9 @@ export const AddRecipeModal: React.FC<AddRecipeModalProps> = ({
       prepTimeMinutes: Number(prepTime) || 10,
       cookTimeMinutes: Number(cookTime) || 15,
       defaultServings: Number(servings) || 2,
-      tags: ['Custom Recipe', category],
-      rating: 5.0,
-      reviewsCount: 1,
+      tags: editingRecipe ? editingRecipe.tags : ['Custom Recipe', category],
+      rating: editingRecipe ? editingRecipe.rating : 5.0,
+      reviewsCount: editingRecipe ? editingRecipe.reviewsCount : 1,
       isCustom: true,
       nutrition: {
         calories: Number(calories) || 400,
@@ -109,7 +156,7 @@ export const AddRecipeModal: React.FC<AddRecipeModalProps> = ({
       ],
     };
 
-    onAddRecipe(newRecipe);
+    onSaveRecipe(savedRecipe);
     onClose();
   };
 
@@ -123,10 +170,10 @@ export const AddRecipeModal: React.FC<AddRecipeModalProps> = ({
         <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-950/80 text-brand-600 dark:text-brand-400 flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
+              {editingRecipe ? <Edit3 className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
             </div>
             <h2 className="text-lg font-bold font-display text-zinc-900 dark:text-white">
-              Create New Test Recipe
+              {editingRecipe ? 'Edit Recipe' : 'Create New Test Recipe'}
             </h2>
           </div>
           <button
@@ -430,7 +477,7 @@ export const AddRecipeModal: React.FC<AddRecipeModalProps> = ({
               type="submit"
               className="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold shadow-md shadow-brand-600/20 active:scale-98 transition-all"
             >
-              Save &amp; View Recipe
+              {editingRecipe ? 'Save Changes' : 'Save & View Recipe'}
             </button>
           </div>
         </form>

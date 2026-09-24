@@ -50,3 +50,16 @@ export interface Recipe {
   isFeatured?: boolean;
   isCustom?: boolean;
 }
+
+export type IngredientAisle = 'Produce' | 'Pantry' | 'Dairy & Eggs' | 'Meat & Seafood' | 'Spices' | 'Other';
+
+export interface ShoppingItem {
+  id: string;
+  name: string;
+  amount: number;
+  unit: string;
+  category: IngredientAisle;
+  recipeTitle?: string;
+  checked: boolean;
+}
+
