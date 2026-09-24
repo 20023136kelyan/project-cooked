@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Recipe } from '../types/recipe';
-import { formatIngredientAmount } from '../utils/format';
+import { convertIngredientUnit, UnitSystem } from '../utils/units';
 import { 
   getCheckedIngredientsMap, 
   setCheckedIngredientsMap 
@@ -18,7 +18,11 @@ import {
   Heart, 
   Lightbulb,
   CheckCircle2,
-  Share2
+  Share2,
+  Edit3,
+  Trash2,
+  ShoppingCart,
+  CheckCheck
 } from 'lucide-react';
 
 interface RecipeDetailModalProps {
@@ -28,6 +32,9 @@ interface RecipeDetailModalProps {
   isFavorite: boolean;
   onToggleFavorite: (id: string, e: React.MouseEvent) => void;
   onStartCookMode: (recipe: Recipe) => void;
+  onAddToShoppingList: (recipe: Recipe, ratio: number) => void;
+  onEditRecipe?: (recipe: Recipe) => void;
+  onDeleteRecipe?: (recipeId: string) => void;
 }
 
 export const RecipeDetailModal: React.FC<RecipeDetailModalProps> = ({
@@ -37,12 +44,30 @@ export const RecipeDetailModal: React.FC<RecipeDetailModalProps> = ({
   isFavorite,
   onToggleFavorite,
   onStartCookMode,
+  onAddToShoppingList,
+  onEditRecipe,
+  onDeleteRecipe,
 }) => {
   if (!isOpen || !recipe) return null;
 
   const [servings, setServings] = useState<number>(recipe.defaultServings);
   const [checkedMap, setCheckedMap] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
+  const [addedToShopping, setAddedToShopping] = useState(false);
+  const [unitSystem, setUnitSystem] = useState<UnitSystem>(() => {
+    return (localStorage.getItem('cooked_unit_system') as UnitSystem) || 'us';
+  });
+
+  const handleToggleUnitSystem = (sys: UnitSystem) => {
+    setUnitSystem(sys);
+    localStorage.setItem('cooked_unit_system', sys);
+  };
+
+  const handleAddShoppingList = () => {
+    onAddToShoppingList(recipe, ratio);
+    setAddedToShopping(true);
+    setTimeout(() => setAddedToShopping(false), 2000);
+  };
 
   // Sync servings and checked state when recipe changes
   useEffect(() => {
@@ -100,11 +125,48 @@ export const RecipeDetailModal: React.FC<RecipeDetailModalProps> = ({
 
           {/* Top Floating Buttons */}
           <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-500 text-white shadow">
-              {recipe.category}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-500 text-white shadow">
+                {recipe.category}
+              </span>
+              {recipe.isCustom && (
+                <span className="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500 text-white shadow">
+                  Custom Recipe
+                </span>
+              )}
+            </div>
 
             <div className="flex items-center gap-2">
+              {recipe.isCustom && onEditRecipe && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onEditRecipe(recipe);
+                  }}
+                  className="p-2.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white transition-colors"
+                  title="Edit this custom recipe"
+                >
+                  <Edit3 className="w-4 h-4" />
+                </button>
+              )}
+
+              {recipe.isCustom && onDeleteRecipe && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm(`Are you sure you want to delete "${recipe.title}"?`)) {
+                      onDeleteRecipe(recipe.id);
+                      onClose();
+                    }
+                  }}
+                  className="p-2.5 rounded-full bg-rose-600/80 hover:bg-rose-600 backdrop-blur-md text-white transition-colors"
+                  title="Delete this custom recipe"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={handleShare}
