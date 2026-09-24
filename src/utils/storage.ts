@@ -51,6 +51,30 @@ export const saveStoredCustomRecipe = (recipe: Recipe): Recipe[] => {
   }
 };
 
+export const updateStoredCustomRecipe = (recipe: Recipe): Recipe[] => {
+  try {
+    const existing = getStoredCustomRecipes();
+    const updated = existing.map((r) => (r.id === recipe.id ? recipe : r));
+    localStorage.setItem(CUSTOM_RECIPES_KEY, JSON.stringify(updated));
+    return updated;
+  } catch (err) {
+    console.error('Failed to update custom recipe', err);
+    return [];
+  }
+};
+
+export const deleteStoredCustomRecipe = (recipeId: string): Recipe[] => {
+  try {
+    const existing = getStoredCustomRecipes();
+    const updated = existing.filter((r) => r.id !== recipeId);
+    localStorage.setItem(CUSTOM_RECIPES_KEY, JSON.stringify(updated));
+    return updated;
+  } catch (err) {
+    console.error('Failed to delete custom recipe', err);
+    return [];
+  }
+};
+
 export const getCheckedIngredientsMap = (recipeId: string): Record<string, boolean> => {
   try {
     const raw = localStorage.getItem(`${CHECKED_INGREDIENTS_KEY}_${recipeId}`);
